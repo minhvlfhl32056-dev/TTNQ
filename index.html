@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TTNQ - Quản lý thu chi</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <h2>◆ TTNQ</h2>
+    <p class="muted">QUẢN LÝ TÀI CHÍNH</p>
+    <button class="nav active" data-page="home">▦ Tổng quan</button>
+    <button class="nav" data-page="transactions">↕ Thu – chi</button>
+    <button class="nav" data-page="customers">♙ Khách hàng & công nợ</button>
+    <button class="nav" data-page="reminders">◷ Lịch nhắc thu tiền</button>
+    <button class="nav" data-page="reports">▥ Báo cáo</button>
+    <p class="tip">Dữ liệu được lưu trên trình duyệt của thiết bị này.</p>
+  </aside>
+
+  <main>
+    <header><div><small>QUẢN LÝ TÀI CHÍNH</small><h1 id="title">Tổng quan</h1></div><button class="primary" id="quickAdd">＋ Thêm giao dịch</button></header>
+
+    <section class="page active" id="home">
+      <div class="banner"><h2>Xin chào! 👋</h2><p>Theo dõi dòng tiền và các khoản cần thu của bạn.</p></div>
+      <div class="stats">
+        <article><span>Tổng tiền thu</span><b id="income">0 ₫</b></article>
+        <article><span>Tổng tiền chi</span><b id="expense">0 ₫</b></article>
+        <article><span>Số dư hiện tại</span><b id="balance">0 ₫</b></article>
+        <article><span>Còn phải thu</span><b id="debt">0 ₫</b></article>
+      </div>
+      <div class="columns">
+        <article class="panel"><h3>Giao dịch gần đây</h3><div class="table-wrap"><table><thead><tr><th>Nội dung</th><th>Loại</th><th>Ngày</th><th>Số tiền</th></tr></thead><tbody id="recent"></tbody></table></div></article>
+        <article class="panel"><h3>Khoản cần thu</h3><div id="homeDue"></div></article>
+      </div>
+    </section>
+
+    <section class="page" id="transactions">
+      <article class="panel">
+        <h3>Thêm giao dịch</h3>
+        <form id="transactionForm" class="form">
+          <label>Loại<select id="type"><option value="income">Tiền thu</option><option value="expense">Tiền chi</option></select></label>
+          <label>Số tiền (VNĐ)<input id="amount" type="number" min="1" required placeholder="Ví dụ: 500000"></label>
+          <label>Nội dung<input id="note" required placeholder="Nội dung giao dịch"></label>
+          <label>Ngày<input id="date" type="date" required></label>
+          <button class="primary">Lưu giao dịch</button>
+        </form>
+      </article>
+      <article class="panel"><div class="panel-title"><h3>Lịch sử giao dịch</h3><button class="outline" id="exportTransactions">Xuất CSV</button></div>
+        <div class="table-wrap"><table><thead><tr><th>Nội dung</th><th>Loại</th><th>Ngày</th><th>Số tiền</th><th></th></tr></thead><tbody id="transactionRows"></tbody></table></div>
+      </article>
+    </section>
+
+    <section class="page" id="customers">
+      <article class="panel">
+        <h3>Thêm khách hàng / khoản phải thu</h3>
+        <form id="customerForm" class="form">
+          <label>Tên khách hàng<input id="customerName" required placeholder="Họ và tên"></label>
+          <label>Số điện thoại<input id="phone" placeholder="Không bắt buộc"></label>
+          <label>Tổng tiền cần đóng<input id="total" type="number" min="1" required placeholder="VNĐ"></label>
+          <label>Đã thanh toán<input id="paid" type="number" min="0" value="0" required></label>
+          <label>Hạn thanh toán<input id="due" type="date" required></label>
+          <label>Ghi chú<input id="customerNote" placeholder="Không bắt buộc"></label>
+          <button class="primary">＋ Thêm khách hàng</button>
+        </form>
+      </article>
+      <article class="panel"><div class="panel-title"><h3>Danh sách khách hàng</h3><button class="outline" id="exportCustomers">Xuất CSV</button></div>
+        <div class="table-wrap"><table><thead><tr><th>Khách hàng</th><th>Hạn đóng</th><th>Phải đóng</th><th>Đã đóng</th><th>Còn nợ</th><th>Trạng thái</th><th>Thao tác</th></tr></thead><tbody id="customerRows"></tbody></table></div>
+      </article>
+    </section>
+
+    <section class="page" id="reminders">
+      <div class="stats three">
+        <article><span>Quá hạn</span><b id="overdue">0</b></article>
+        <article><span>Đến hạn hôm nay</span><b id="dueToday">0</b></article>
+        <article><span>Sắp đến hạn (7 ngày)</span><b id="upcoming">0</b></article>
+      </div>
+      <article class="panel"><h3>Lịch nhắc thu tiền</h3><div id="reminderRows"></div></article>
+    </section>
+
+    <section class="page" id="reports">
+      <article class="panel"><h3>Biểu đồ thu – chi</h3><canvas id="financeChart" width="700" height="260"></canvas></article>
+      <article class="panel"><h3>Đã thanh toán và còn nợ</h3><canvas id="debtChart" width="700" height="260"></canvas></article>
+      <button class="outline" id="exportAll">Xuất báo cáo CSV</button>
+    </section>
+    <footer>TTNQ © 2026 · Quản lý thu chi đơn giản, rõ ràng.</footer>
+  </main>
+</div>
+
+<div class="modal-bg" id="modal">
+  <div class="modal panel">
+    <div class="panel-title"><h3>Ghi nhận thanh toán</h3><button class="outline" id="closeModal">Đóng</button></div>
+    <p id="modalName"></p>
+    <form id="paymentForm">
+      <label>Số tiền khách vừa đóng<input id="paymentAmount" type="number" min="1" required></label>
+      <p class="muted" id="paymentHint"></p>
+      <button class="primary">Xác nhận thanh toán</button>
+    </form>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

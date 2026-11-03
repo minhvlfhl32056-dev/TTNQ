@@ -1,0 +1,9 @@
+{
+  "name": "FINORA - Quản lý thu chi",
+  "short_name": "FINORA",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f4f7fc",
+  "theme_color": "#3269d8",
+  "icons": []
+}
